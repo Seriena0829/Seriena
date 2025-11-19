@@ -1,2 +1,0 @@
-# Seriena
-Greatday
