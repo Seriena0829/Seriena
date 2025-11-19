@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年世界铜业会议（亚洲）- 邀请函</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF9E00',
+                        light: '#FFF8F0',
+                        dark: '#333333',
+                        'light-orange': '#FFE0CC',
+                        'medium-orange': '#FF9E00'
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'apple': '0 10px 30px -10px rgba(0, 0, 0, 0.2)',
+                        'envelope': '0 20px 40px -15px rgba(255, 107, 0, 0.3)',
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 2s infinite',
+                        'fade-in': 'fadeIn 0.8s ease-in-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-in-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        pulse: {
+                            '0%, 100%': { opacity: 0.8 },
+                            '50%': { opacity: 1 },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: 0 },
+                            '100%': { opacity: 1 },
+                        },
+                        slideUp: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            .envelope-hover {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .envelope-hover:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 30px 50px -20px rgba(255, 107, 0, 0.4);
+            }
+            .ripple {
+                position: relative;
+                overflow: hidden;
+            }
+            .ripple:after {
+                content: "";
+                display: block;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                pointer-events: none;
+                background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+                background-repeat: no-repeat;
+                background-position: 50%;
+                transform: scale(10, 10);
+                opacity: 0;
+                transition: transform .5s, opacity 1s;
+            }
+            .ripple:active:after {
+                transform: scale(0, 0);
+                opacity: .3;
+                transition: 0s;
+            }
+            .bg-gradient-orange {
+                background: linear-gradient(135deg, #FF6B00 0%, #FF9E00 100%);
+            }
+            .btn-hover {
+                @apply transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+            }
+        }
+    </style>
+    <style>
+        body {
+            font-family: 'SF Pro Display', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* 页面容器 */
+        .page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        /* 信封页面样式 */
+        #envelopePage {
+            background-color: #FFE0CC;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 20;
+        }
+        
+        /* 邀请函详情页面样式 */
+        #invitationPage {
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* 信封页面元素样式 */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .envelope-container {
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .envelope {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+        }
+        
+        .logo-overlay {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20%;
+            max-width: 75px;
+            z-index: 20;
+        }
+        
+        .invitation-text {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+            width: 20%;
+            max-width: 75px;
+            text-align: center;
+        }
+        
+        .envelope-label {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #FF6B00;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            width: 80%;
+        }
+        
+        .envelope-label i {
+            margin-right: 8px;
+            font-size: 20px;
+            animation: bounce 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            animation: confetti 5s ease-in-out infinite;
+        }
+        
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 信封打开动画 */
+        @keyframes openEnvelope {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            20% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(10deg) scale(0.9);
+                opacity: 0;
+            }
+        }
+        
+        .envelope-opening {
+            animation: openEnvelope 1s forwards;
+        }
+        
+        /* 页面过渡 */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFE0CC;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .page-transition.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 邀请函详情页面样式 */
+        .invitation-container {
+            relative: relative;
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            max-height: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        #invitationContent {
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面过渡层 -->
+    <div id="pageTransition" class="page-transition"></div>
+    
+    <!-- 信封页面 -->
+    <div id="envelopePage" class="page">
+        <div class="container">
+            <!-- 信封容器 -->
+            <div class="flex flex-col items-center" id="envelopeContainer">
+                <!-- 信封 -->
+                <div class="envelope envelope-hover cursor-pointer relative" id="envelope">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/724128a769384d93a9070ed0f9e55b64~tplv-a9rns2rl98-image.image?rcl=20251119161704AFF9722846778D111E27&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1766132245&x-signature=ebgjKFP0Igb05WgOGC6NxANgJdw%3D" 
+                         alt="橙色信封" 
+                         class="w-full h-auto object-contain">
+                    
+                    <!-- 信封上的Logo -->
+                    <div class="logo-overlay">
+                        <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/32ecdb08db60454b9d0ebd91776bc2d6.png~tplv-a9rns2rl98-24:720:720.png?rcl=2025111910034527170269F5625672E0E5&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1764122625&x-signature=qHY4Lu8ncaa%2B1u9QhajGg4T%2BsTc%3D" 
+                             alt="白色HOSCH Logo" 
+                             class="w-full h-auto object-contain">
+                    </div>
+                    
+                    <!-- 信封上的"邀请函"文字 -->
+                    <div class="invitation-text">
+                        邀请函
+                    </div>
+                    
+                    <!-- 信封内的提示文字 -->
+                    <div class="envelope-label">
+                        <i class="fa fa-hand-pointer-o"></i>
+                        点击信封开启邀请函
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 邀请函详情页面 -->
+    <div id="invitationPage" class="page">
+        <div class="invitation-container">
+            <!-- 邀请函内容 -->
+            <div id="invitationContent" class="w-full h-full bg-white rounded-xl shadow-xl overflow-y-auto animate-fade-in">
+                <div class="relative">
+                    <!-- 邀请函头部 -->
+                    <div class="bg-gradient-orange text-white p-6 rounded-t-xl flex items-center justify-between">
+                        <div class="flex items-center">
+                            <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/32ecdb08db60454b9d0ebd91776bc2d6.png~tplv-a9rns2rl98-24:720:720.png?rcl=2025111910034527170269F5625672E0E5&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1764122625&x-signature=qHY4Lu8ncaa%2B1u9QhajGg4T%2BsTc%3D" alt="白色HOSCH Logo" class="h-20">
+                        </div>
+                        <div class="bg-white text-primary text-lg font-bold py-3 px-6 rounded-full shadow-lg">
+                            邀请函
+                        </div>
+                    </div>
+
+                    <!-- 邀请函主体 -->
+                    <div class="p-6">
+                        <div class="mb-8">
+                            <h2 class="text-xl font-bold text-dark mb-4">尊敬的合作伙伴：</h2>
+                            <p class="text-gray-700 leading-relaxed">
+                                您好！我们诚挚邀请您参加由中国五矿集团有限公司和英国商品研究所（CRU）联合主办的2025年世界铜业会议（亚洲），大会将于2025年11月26日至27日在上海金茂君悦大酒店举办。本次会议汇聚全球铜业领袖、专家学者和企业代表，共同探讨行业发展趋势，战略布局与前沿技术。
+                            </p>
+                        </div>
+
+                        <!-- 展会信息 -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                            <div class="bg-light p-4 rounded-lg flex items-center">
+                                <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                    <i class="fa fa-file-text-o text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-dark">会议名称</h3>
+                                    <p class="text-gray-600">2025年世界铜业会议（亚洲）</p>
+                                </div>
+                            </div>
+                            <div class="bg-light p-4 rounded-lg flex items-center">
+                                <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                    <i class="fa fa-calendar text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-dark">展会时间</h3>
+                                    <p class="text-gray-600">2025年11月26日-27日</p>
+                                </div>
+                            </div>
+                            <div class="bg-light p-4 rounded-lg flex items-center">
+                                <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                    <i class="fa fa-map-marker text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-dark">展会地点</h3>
+                                    <p class="text-gray-600">上海金茂君悦大酒店</p>
+                                </div>
+                            </div>
+                            <div class="bg-light p-4 rounded-lg flex items-center">
+                                <div class="bg-primary/10 p-3 rounded-full mr-4">
+                                    <i class="fa fa-map-signs text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-dark">展位号</h3>
+                                    <p class="text-gray-600">06</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 联系信息 -->
+                        <div class="bg-light p-4 rounded-lg mb-8">
+                            <h2 class="text-xl font-bold text-dark mb-4">联系我们</h2>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <i class="fa fa-envelope text-primary mr-4 w-5 text-center"></i>
+                                    <span>info@hosch-cn.com</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-phone text-primary mr-4 w-5 text-center"></i>
+                                    <span>400-619-3688</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-globe text-primary mr-4 w-5 text-center"></i>
+                                    <span>www.hosch-cn.com</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 参会方式 -->
+                        <div class="mb-8">
+                            <div class="bg-light p-4 rounded-lg">
+                                <div class="flex flex-col items-center justify-center">
+                                    <img src="https://p11-flow-imagex-download-sign.byteimg.com/tos-cn-i-a9rns2rl98/588cee3d6e7f434d86e1ac309def3b38.jpg~tplv-a9rns2rl98-24:720:720.image?rcl=20251119101801DD848ECB0D3F3A383C4F&rk3s=8e244e95&rrcfp=8a172a1a&x-expires=1764123481&x-signature=J6Sv6nOg4PyGAG2s4RzP9pzL2so%3D" alt="公司公众号二维码" class="w-32 h-32 object-contain mb-4">
+                                    <p class="text-center text-gray-700 font-medium">扫描上方二维码关注公众号</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 页脚 -->
+                    <div class="bg-gray-100 p-4 rounded-b-xl text-center text-gray-500 text-sm">
+                        <p>@德国HOSCH</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 声音效果 -->
+    <audio id="openSound" src="https://assets.mixkit.co/sfx/preview/mixkit-elegant-opening-door-206.mp3" preload="auto"></audio>
+    
+    <script>
+        // DOM Elements
+        const envelopeContainer = document.getElementById('envelopeContainer');
+        const envelope = document.getElementById('envelope');
+        const openSound = document.getElementById('openSound');
+        const pageTransition = document.getElementById('pageTransition');
+        const envelopePage = document.getElementById('envelopePage');
+        const invitationPage = document.getElementById('invitationPage');
+        
+        // 初始化页面过渡
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                pageTransition.classList.add('fade-out');
+            }, 500);
+        });
+        
+        // 打开邀请函函数
+        function openInvitation() {
+            // 播放声音
+            openSound.play();
+            
+            // 添加信封打开动画
+            envelope.classList.add('envelope-opening');
+            
+            // 创建纸屑效果
+            createConfetti();
+            
+            // 延迟后切换到邀请函详情页面
+            setTimeout(() => {
+                envelopePage.style.opacity = '0';
+                envelopePage.style.pointerEvents = 'none';
+                
+                invitationPage.style.opacity = '1';
+                invitationPage.style.transform = 'translateY(0)';
+                invitationPage.style.pointerEvents = 'auto';
+            }, 1000);
+        }
+        
+        // 纸屑效果函数
+        function createConfetti() {
+            const colors = ['#FF6B00', '#FF9E00', '#FFC078', '#FFF8F0', '#E66A00'];
+            const confettiContainer = document.body;
+            
+            // 创建100个纸屑
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // 随机属性
+                const size = Math.random() * 10 + 5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const left = Math.random() * 100;
+                const animationDuration = Math.random() * 3 + 2;
+                const delay = Math.random() * 2;
+                
+                // 应用样式
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.backgroundColor = color;
+                confetti.style.left = `${left}%`;
+                confetti.style.animationDuration = `${animationDuration}s`;
+                confetti.style.animationDelay = `${delay}s`;
+                
+                // 添加到容器
+                confettiContainer.appendChild(confetti);
+                
+                // 动画完成后移除
+                setTimeout(() => {
+                    confetti.remove();
+                }, (animationDuration + delay) * 1000);
+            }
+        }
+        
+        // 事件监听器
+        envelopeContainer.addEventListener('click', openInvitation);
+        envelope.addEventListener('click', openInvitation);
+        
+        // 空格键打开邀请函
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                openInvitation();
+            }
+        });
+        
+        // 邀请函页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('邀请函页面加载完成');
+            
+            // 添加页面加载动画
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>
